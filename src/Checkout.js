@@ -20,13 +20,13 @@ import React, { useEffect, useState } from "react";
 //  - The total should reflect any discount that has been applied
 //  - All dollar amounts should be displayed to 2 decimal places
 
-const Product = () => {
+const Product = ({ id, name, availableCount, price }) => {
   return (
     <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>{id}</td>
+      <td>{name}</td>
+      <td>{availableCount}</td>
+      <td>{price}</td>
       <td></td>
       <td></td>
       <td>
@@ -38,33 +38,64 @@ const Product = () => {
 };
 
 const Checkout = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchProducts = () => {
+      getProducts()
+        .then((prods) => {
+          console.log(prods);
+          setProducts(prods);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    fetchProducts();
+  }, []);
   return (
     <div>
       <header className={styles.header}>
         <h1>Electro World</h1>
       </header>
-      <main>
-        <div>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Product ID</th>
-                <th>Product Name</th>
-                <th># Available</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <h2>Order summary</h2>
-          <p>Discount: $ </p>
-          <p>Total: $ </p>
-        </div>
-      </main>
+      {loading && <LoadingIcon />}
+      {products && products.length > 0 && (
+        <main>
+          <div>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Product ID</th>
+                  <th>Product Name</th>
+                  <th># Available</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((product) => {
+                  return (
+                    <Product
+                      key={product.id}
+                      id={product.id}
+                      name={product.name}
+                      availableCount={product.availableCount}
+                      price={product.price}
+                    />
+                  );
+                })}
+              </tbody>
+            </table>
+            <h2>Order summary</h2>
+            <p>Discount: $ </p>
+            <p>Total: $ </p>
+          </div>
+        </main>
+      )}
     </div>
   );
 };
