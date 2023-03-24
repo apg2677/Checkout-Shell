@@ -41,10 +41,12 @@ const Product = ({ id, name, availableCount, price }) => {
       <td>{quantity}</td>
       <td></td>
       <td>
-        <button disabled={availableCount < 1} onClick={handleIncrement}>
+        <button disabled={count < 1} onClick={handleIncrement}>
           +
         </button>
-        <button onClick={handleDecrement}>-</button>
+        <button disabled={quantity < 1} onClick={handleDecrement}>
+          -
+        </button>
       </td>
     </tr>
   );
