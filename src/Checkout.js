@@ -39,7 +39,7 @@ const Product = ({ id, name, availableCount, price }) => {
       <td>{count}</td>
       <td>{price}</td>
       <td>{quantity}</td>
-      <td></td>
+      <td>{price * quantity}</td>
       <td>
         <button disabled={count < 1} onClick={handleIncrement}>
           +
