@@ -20,9 +20,10 @@ import React, { useEffect, useState } from "react";
 //  - The total should reflect any discount that has been applied
 //  - All dollar amounts should be displayed to 2 decimal places
 
-const Product = ({ id, name, availableCount, price }) => {
+const Product = ({ id, name, availableCount, price, handleTotalSummary }) => {
   const [quantity, setQuantity] = useState(0);
   const [count, setCount] = useState(availableCount);
+  const [productTotal, setProductTotal] = useState(0);
   const handleIncrement = () => {
     setQuantity((oldState) => oldState + 1);
   };
@@ -31,7 +32,9 @@ const Product = ({ id, name, availableCount, price }) => {
   };
   useEffect(() => {
     setCount(availableCount - quantity);
-  }, [quantity]);
+    setProductTotal(price * quantity);
+    handleTotalSummary(productTotal);
+  }, [quantity, productTotal]);
   return (
     <tr>
       <td>{id}</td>
@@ -39,7 +42,7 @@ const Product = ({ id, name, availableCount, price }) => {
       <td>{count}</td>
       <td>{price}</td>
       <td>{quantity}</td>
-      <td>{price * quantity}</td>
+      <td>{productTotal}</td>
       <td>
         <button disabled={count < 1} onClick={handleIncrement}>
           +
@@ -55,7 +58,11 @@ const Product = ({ id, name, availableCount, price }) => {
 const Checkout = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalSummary, setTotalSummary] = useState(0);
 
+  const handleTotalSummary = async (amount) => {
+    setTotalSummary((prevTotal) => prevTotal + amount);
+  };
   useEffect(() => {
     const fetchProducts = () => {
       getProducts()
@@ -102,6 +109,7 @@ const Checkout = () => {
                       name={product.name}
                       availableCount={product.availableCount}
                       price={product.price}
+                      handleTotalSummary={handleTotalSummary}
                     />
                   );
                 })}
@@ -109,7 +117,7 @@ const Checkout = () => {
             </table>
             <h2>Order summary</h2>
             <p>Discount: $ </p>
-            <p>Total: $ </p>
+            <p>Total: $ {totalSummary}</p>
           </div>
         </main>
       )}
