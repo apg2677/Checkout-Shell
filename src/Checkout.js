@@ -21,17 +21,30 @@ import React, { useEffect, useState } from "react";
 //  - All dollar amounts should be displayed to 2 decimal places
 
 const Product = ({ id, name, availableCount, price }) => {
+  const [quantity, setQuantity] = useState(0);
+  const [count, setCount] = useState(availableCount);
+  const handleIncrement = () => {
+    setQuantity((oldState) => oldState + 1);
+  };
+  const handleDecrement = () => {
+    setQuantity((oldState) => oldState - 1);
+  };
+  useEffect(() => {
+    setCount(availableCount - quantity);
+  }, [quantity]);
   return (
     <tr>
       <td>{id}</td>
       <td>{name}</td>
-      <td>{availableCount}</td>
+      <td>{count}</td>
       <td>{price}</td>
-      <td></td>
+      <td>{quantity}</td>
       <td></td>
       <td>
-        <button>+</button>
-        <button>-</button>
+        <button disabled={availableCount < 1} onClick={handleIncrement}>
+          +
+        </button>
+        <button onClick={handleDecrement}>-</button>
       </td>
     </tr>
   );
@@ -40,6 +53,7 @@ const Product = ({ id, name, availableCount, price }) => {
 const Checkout = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchProducts = () => {
       getProducts()
@@ -54,6 +68,7 @@ const Checkout = () => {
     };
     fetchProducts();
   }, []);
+
   return (
     <div>
       <header className={styles.header}>
